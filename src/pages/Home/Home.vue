@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="app">
-      <img src="./images/01.jpg" alt="">
+      <img src="./images/01 (35).jpg" alt="">
     </div>
     <div class="main">
       <div class="main_header">
@@ -28,70 +28,113 @@
         </div>
         <div class="header_bottom">
           <ul class="header_scroll">
-            <li class="on">
-              首页
+            <li v-for="(menu, index) in home.menus" :key="index" :class="{on: index === 0}">
+              {{menu.menu_name}}
               <i></i>
             </li>
-            <li>狗狗主粮</li>
-            <li>零食</li>
-            <li>医疗保健</li>
-            <li>玩具</li>
-            <li>外出</li>
-            <li>服饰城</li>
           </ul>
         </div>
       </div>
       <div class="main_body">
         <div class="swiper-container">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide"><img src="./images/1.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/2.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/3.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/4.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/5.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/6.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/7.jpg" alt=""></div>
-            <div class="swiper-slide"><img src="./images/8.jpg" alt=""></div>
+          <div class="swiper-wrapper" v-if="carousel.data">
+            <div class="swiper-slide" v-for="(img, index) in carousel.data['1'].value" :key="index">
+              <img :src="img.image" alt="">
+            </div>
           </div>
           <div class="swiper-pagination">
         </div>
       </div>
         <div class="main_icon">
-          <ul>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
-            </li>
-            <li>
-              <img src="./images/02.jpg" alt="">
+          <ul v-if="home.datas">
+            <li v-for="(menu, index) in home.datas[1].menus" :key="index">
+              <img :src="menu.image" alt="">
             </li>
           </ul>
         </div>
-        <div class="main_new">
-          <img src="./images/03.gif" alt="">
+        <div class="main_new" v-if="carousel.data">
+          <img :src="carousel.data['2438'].value['0'].image" alt="">
+        </div>
+        <div class="main_list">
+          <div class="list_title" v-if="carousel.data">
+            <img :src="carousel.data['3'].surprise_icon.image" alt="">
+            <div class="list_time">
+              <p>{{carousel.data['3'].title}}</p>
+              <p>17: 00</p>
+            </div>
+            <div class="list_more" v-if="carousel.data">
+              <img :src="carousel.data['3'].right_image.image" alt="">
+            </div>
+          </div>
+          <div class="list_item" v-if="carousel.data">
+            <ul v-if="carousel.data">
+              <li v-for="(good, index) in carousel.data['3'].goods" :key="index">
+                <img :src="good.image.image" alt="">
+                <span>￥{{good.sale_price}}</span>
+                <p>{{good.little_price}}</p>
+              </li>
+            </ul>
+          </div>
+          <div class="flex" v-if="home.datas">
+            <div>
+              <img :src="home.datas[5].content_images[0][0].image1" alt="">
+            </div>
+            <div>
+              <img class="dog" :src="home.datas[5].content_images[1][0].image1" alt="">
+              <img class="dog" :src="home.datas[5].content_images[1][1].image1" alt="">
+            </div>
+          </div>
+          <Split/>
+          <div class="list_img" v-if="home.datas">
+            <img :src="home.datas[7].value[0].image" alt="">
+          </div>
+          <Split/>
+        </div>
+        <div v-if="home.datas">
+          <Tittle :tittle="home.datas[9].value"/>
+          <Picture :pic="home.datas[10].value[0]"/>
+        </div>
+
+        <Split/>
+        <div class="flexBox2" v-if="carousel.data">
+          <div v-for="(top,index) in carousel.data['3110'].content_images[0]">
+            <img :src="top.image" alt="">
+          </div>
+          <div v-for="(bottom,index) in carousel.data['3110'].content_images[1]">
+            <img :src="bottom.image" alt="">
+          </div>
+        </div>
+        <Split/>
+
+        <div v-if="home.datas">
+          <Tittle :tittle="home.datas[14].value"/>
+          <div v-for="(data,index) in home.datas" :key="index">
+            <div v-for="(pic,index) in data.content_images" :key="index">
+              <img :src="pic[0].image">
+            </div>
+          </div>
+        </div>
+        <div v-if="home.datas">
+          <Tittle :tittle="home.datas[46].value"/>
+          <Picture :pic="home.datas[47].value[0]"/>
+          <Split/>
+        </div>
+        <div v-if="home.datas">
+          <Tittle :tittle="home.datas[49].value"/>
+          <Picture :pic="home.datas[50].value[0]"/>
+          <Split/>
+        </div>
+
+        <div class="copyright">
+          <div class="links">
+            <span class="cp" title="触屏版">触屏版</span>
+            <span><a href="##">手机客户端</a></span>
+            <span><a href="###">关于我们</a></span>
+            <span><a href="##">联系我们</a></span>
+          </div>
+          <div class="company">
+            © wap.epet.com 版权：重庆易宠科技有限公司
+          </div>
         </div>
       </div>
     </div>
@@ -101,30 +144,60 @@
 <script>
   import BScroll from 'better-scroll'
   import Swiper from'swiper'
+  import {mapState} from 'vuex'
+
   import 'swiper/dist/css/swiper.min.css'
+
+  import Split from '../../components/Split/Split.vue'
+  import Picture from '../../components/Picture/Picture.vue'
+  import Tittle from '../../components/Tittle/Tittle.vue'
 
   export default {
     mounted(){
+      //分发
+      this.$store.dispatch('getHome')
+      this.$store.dispatch('getCarousel')
+      //头部横向滚动
       new BScroll('.header_bottom',{
         scrollX: true,
         scrollY: false
       })
-      new Swiper('.swiper-container', {
-        loop : true,
-        autoplay: true,
-        pagination: {
-          el: '.swiper-pagination',
-        },
-      })
+
+
+    },
+    //获取state数据
+    computed: {
+      ...mapState(['home', 'carousel']),
+    },
+    watch: {
+
+      carousel(value){
+        //监视有数据时banner轮播
+        this.$nextTick(() => {
+          new Swiper('.swiper-container', {
+            loop : true,
+            autoplay: true,
+            pagination: {
+              el: '.swiper-pagination',
+            },
+          })
+          //监视有数据时每日疯抢横向滚动
+          new BScroll('.list_item',{
+            scrollX: true,
+            scrollY: false
+          })
+        })
+      }
+    },
+    components: {
+      Split,
+      Picture,
+      Tittle
     }
   }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-  .app
-    width 100%
-    img
-      width 100%
   .main_header
     height 86px
     .header_top
@@ -202,9 +275,6 @@
           &.on
             color #459D36
   .main_body
-    .swiper-container
-      img
-        width 100%
     .main_icon
       ul
         width 100%
@@ -212,8 +282,64 @@
         flex-wrap wrap
         li
           width 20%
+    .main_list
+      .list_title
+        position relative
+        img
+          width 85px
+        .list_time
+          display inline-block
+          float right
+          margin-right 60px
+          p
+            float left
+            font-size 13px
+        .list_more
+          position absolute
+          right 0
+          top -21px
+          z-index -100
           img
-            width 100%
-
-
+            width 60px
+      .list_item
+        overflow hidden
+        margin-bottom 20px
+        ul
+          width 120%
+          display flex
+          li
+            text-align center
+            25%
+            span
+              color red
+            p
+              font-size 12px
+              color #7e8c8d
+        img
+          width 85px
+      .flex
+        display flex
+        div
+          width 50%
+  .flexBox2
+    width 100%
+    display flex
+    flex-wrap wrap
+    div
+      width 50%
+  .copyright
+    .links
+      display flex
+      justify-content center
+      font-size 14px
+      padding 15px 0 5px
+      span
+        padding-right 10px
+      .cp
+        color red
+    .company
+      text-align center
+      margin 0 10px 0 10px
+      padding-bottom 80px
+      font-size 12px
 </style>

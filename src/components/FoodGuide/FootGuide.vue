@@ -1,24 +1,24 @@
 <template>
   <footer class="foot">
-    <a href="###" class="guide" :class="{on: $route.path === '/home'}" @click="goto('/home')">
+    <a href="javascript:;" class="guide" :class="{on: $route.path === '/home'}" @click="goto('/home')">
       <span class="icon">
         <i class="iconfont icon-aipinpaidianpuxiangqingmaishouzhuye"></i>
       </span>
       <span>首页</span>
     </a>
-    <a href="###" class="guide" :class="{on: $route.path === '/list'}" @click="goto('/list')">
+    <a href="javascript:;" class="guide" :class="{on: $route.path === '/list'}" @click="goto('/list')">
       <span class="icon">
         <i class="iconfont icon-fenlei"></i>
       </span>
       <span>分类</span>
     </a>
-    <a href="###" class="guide" :class="{on: $route.path === '/cart'}" @click="goto('/cart')">
+    <a href="javascript:;" class="guide" :class="{on: $route.path === '/cart'}" @click="goto('/cart')">
       <span  class="icon">
         <i class="iconfont icon-gouwugouwuchedinggou"></i>
       </span>
       <span>购物车</span>
     </a>
-    <a href="###" class="guide" :class="{on: $route.path === '/login'}" @click="goto('/login')">
+    <a href="javascript:;" class="guide" :class="{on: $route.path === '/login'}" @click="goto('/login')">
       <span class="icon">
         <i class="iconfont icon-wode"></i>
       </span>
@@ -48,6 +48,7 @@
     width 100%
     height 46px
     display flex
+    background #fff
     .guide
       flex 1
       flex-direction column
@@ -62,5 +63,5 @@
         font-size 2px
         margin 2px 0
         i
-          font-size 24px
+          font-size 20px
 </style>

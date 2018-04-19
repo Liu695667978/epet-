@@ -97,3 +97,6 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+img{
+  width: 100%;
+}

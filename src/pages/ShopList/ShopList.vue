@@ -1,13 +1,22 @@
 <template>
   <div>
-    shopList
+    <ListTittle/>
+    <Classify/>
+
   </div>
 </template>
 
 <script>
-  export default {}
+  import ListTittle from '../../components/ListTittle/ListTittle.vue'
+  import Classify from './Classify/Classify.vue'
+  export default {
+    components: {
+      ListTittle,
+      Classify
+    }
+  }
 </script>
 
-<style>
+<style lang="stylus" rel="stylesheet/stylus">
 
 </style>
