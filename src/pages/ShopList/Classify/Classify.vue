@@ -1,61 +1,56 @@
 <template>
-  <div class="list">
+  <div class="list" v-if="classify.categorys">
     <div class="list_left">
       <ul>
-        <li class="on">为您推荐</li>
-        <li>e宠国际</li>
-        <li>去充去毛</li>
-        <li>外出清洁</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
-        <li>狗狗主粮</li>
+        <li v-for="(category, index) in classify.categorys" :key="index" :class="{on:indexFlag === index}" @click="changeIndex(index)">
+          {{category.name}}
+        </li>
       </ul>
     </div>
-    <div class="list_right">
-      <div class="right_tittle">
-        <span>狗狗主粮</span>
-        <img src="./images/1.png" alt="">
+    <div class="list_right" v-for="(cate, index) in classify.categorys[indexFlag].cate_list" :key="index">
+      <div class="right_tittle" >
+        <span>{{cate.title}}</span>
+        <img :src="cate.rigth_img.image" alt="">
       </div>
       <ul>
-        <li>
-          <img src="./images/2.jpg" alt="">
-          <span>处方量</span>
+        <li v-for="(l,index) in cate.list" :key="index">
+          <img :src="l.logo || l.photo" alt="">
+          <span>{{l.name}}</span>
         </li>
-        <li>
-          <img src="./images/2.jpg" alt="">
-          <span>处方量</span>
-        </li>
-        <li>
-          <img src="./images/2.jpg" alt="">
-          <span>处方量</span>
-        </li>
-        <li>
-          <img src="./images/2.jpg" alt="">
-          <span>处方量</span>
-        </li>
-        <li><img src="./images/2.jpg" alt=""></li>
-        <li><img src="./images/2.jpg" alt=""></li>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import BScroll from 'better-scroll'
   export default {
     mounted(){
-      new BScroll('.list_left',{
-        scrollX: false,
-        scrollY: true,
-        click: true
-      })
+      this.$store.dispatch('getClassify')
+    },
+    data(){
+      return {
+        indexFlag: 0
+      }
+    },
+    computed:{
+      ...mapState(['classify'])
+    },
+    watch: {
+      classify(value){
+        this.$nextTick(()=>{
+          new BScroll('.list_left',{
+            click: true
+          })
+        })
+      }
+    },
+    methods: {
+      changeIndex(index){
+        this.indexFlag = index
+        console.log(index);
+      }
     }
   }
 </script>
