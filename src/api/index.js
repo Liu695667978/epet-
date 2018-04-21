@@ -10,3 +10,11 @@ export const reqBrand = () => ajax('./api/brand')
 export const reqClassify = () => ajax('./api/classify')
 //获取全部列表
 export const reqAllBrand = () => ajax('./api/allbrand')
+//获取一次性验证码
+export const reqCaptcha = () => ajax('./api/captcha')
+
+export  const loginPwd = ({name, pwd, captcha}) => ajax('/api/login_pwd', {name, pwd, captcha}, 'POST')
+
+export  const sendCode = (phone) => ajax('/api/sendcode', {phone})
+
+export  const loginSms = ({phone, code}) => ajax('/api/login_sms', {phone, code}, 'POST')

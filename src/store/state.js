@@ -3,5 +3,5 @@ export default {
   carousel: {},
   brand: {},
   classify: {},
-  allBrand: {}
+  allBrand: {},
 }

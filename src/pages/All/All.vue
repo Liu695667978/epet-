@@ -1,30 +1,29 @@
 <template>
- <div >
-   <AllTittle text="全部品牌"/>
-   <div class="letter" v-if="allBrand.brand">
+  <div>
+    <div class="letter" v-if="allBrand.brand">
       <ul>
-        <li v-for="(brand, index) in allBrand.brand" :key="index">{{brand.order}}</li>
+        <li v-for="(brand, index) in allBrand.brand" :key="index"
+           :class="{on:currentsIndex === index}" @click="selectIndex(index)">{{brand.order}}</li>
       </ul>
-   </div>
-   <div class="wrap">
-     <div class="all_wrap">
-       <div v-for="(brand, index) in allBrand.brand" :key="index">
-         <Split :title="brand.order"/>
-         <div>
-           <div class="brand-wrapper clearfix" v-for="(list, index) in brand.list" :key="index">
-             <div class="brand-img">
-               <img :src="list.logo" alt="">
-             </div>
-             <div class="brand-name">
-               <p class="f14">{{list.name}}</p>
-               <p class="f12">{{list.address}}</p>
-             </div>
-           </div>
+    </div>
+    <div class="wrap">
+    <div ref="all_wrap">
+     <AllTittle text="全部品牌"/>
+     <div v-for="(brand, index) in allBrand.brand" :key="index" class="bcc">
+       <Split :title="brand.order"/>
+       <div class="brand-wrapper clearfix" v-for="(list, index) in brand.list" :key="index">
+         <div class="brand-img">
+           <img :src="list.logo" alt="">
+         </div>
+         <div class="brand-name">
+           <p class="f14">{{list.name}}</p>
+           <p class="f12">{{list.address}}</p>
          </div>
        </div>
      </div>
-   </div>
- </div>
+    </div>
+    </div>
+  </div>
 </template>
 <script>
   import {mapState} from 'vuex'
@@ -35,10 +34,9 @@
   export default {
     mounted(){
       this.$store.dispatch('getAllBrand', ()=>{
-        this.$nextTick(() => {
-
-//        this._initTops()
+        this.$nextTick(()=>{
           this._initScroll()
+          this._initTops()
         })
       })
 
@@ -57,37 +55,63 @@
       ...mapState(['allBrand']),
       currentsIndex(){
         const {tops, scrollY} = this
-        return tops.findIndex((top, index) => {
-          scrollY >= top && scrollY< top[index+1]
-        })
+        return tops.findIndex((top, index) => scrollY >= top && scrollY< tops[index+1])
       }
     },
     methods: {
-//      _initTops(){
-//        const tops = []
-//        let top = 0
-//        tops.push(top)
-//        const wraps = this.$refs.all_wrap.getElementsByClassName('brand-wrapper')
-//        Array.prototype.slice.call(wraps).forEach(wrap => {
-//          top += wrap.clientHeight
-//          tops.push(top)
-//        })
-//
-//        this.tops = tops
-//      },
+      _initTops(){
+        const tops=[]
+        let top = 0
+        tops.push(top)
+        const wraps = this.$refs.all_wrap.getElementsByClassName('bcc')
+        Array.prototype.slice.call(wraps).forEach(wrap => {
+
+          top += wrap.clientHeight
+          tops.push(top)
+        })
+        tops[tops.length-2]=tops[tops.length-2]-400
+        this.tops = tops
+      },
+
       _initScroll(){
-        new BScroll('.wrap' ,{
-           scrollY:true,
+        this.wrapScroll = new BScroll('.wrap', {
+          probeType: 2,
           click:true
         })
+
+        //绑定scroll监听
+        this.wrapScroll.on('scroll', (pos) => {
+          this.scrolly = Math.abs(pos.y)
+//          console.log(pos.x, pos.y,this.scrolly)
+        })
+        this.wrapScroll.on('scrollEnd', (pos)=>{
+//          console.log('scrollEnd', pos.x, pos.y)
+          this.scrollY = Math.abs(pos.y)
+        })
+      },
+
+      selectIndex(index){
+        const y = -this.tops[index]
+
+        this.scrollY = -y
+
+
+        this.wrapScroll.scrollTo(0, y, 300)
       }
+
     }
   }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 @import "../../common/stylus/mixins.styl"
+html,body
+  height 100%
+  overflow hidden
+.wrap
+  height 400px
 .letter
   position fixed
+  z-index 1000
   height 100%
   right 6px
   width 10px
@@ -95,10 +119,8 @@
   ul
     text-align center
     font-size 15px
-.wrap
-  height 100%
-  .all_wrap
-    height 140%
+.on
+  color red
 .brand-wrapper
   padding-bottom 10px
   border-bottom  1px solid #f1f1f1

@@ -6,42 +6,42 @@
         <a href="javascript:;" class="register"><span>注册</span></a>
       </div>
       <div class="bottom">
-        <a href="javascript:;" class="commonReg" @click="login = true"><span>普通登录</span><i v-show= "login"></i></a>
-        <a href="javascript:;" class="phoneReg" @click="login = false"><span>手机动态密码登录</span><i v-show= "!login"></i></a>
+        <a href="javascript:;" class="commonReg" @click="login=true"><span>普通登录</span><i v-show= "login"></i></a>
+        <a href="javascript:;" class="phoneReg" @click="login=false"><span>手机动态密码登录</span><i v-show= "!login"></i></a>
       </div>
     </div>
     <div class="body2" :class="{on: login}">
       <div class="top">
         <span>&#9851</span>
-        <input type="text" placeholder="手机号/邮箱/用户名">
+        <input type="text" placeholder="手机号/邮箱/用户名" v-model="name">
       </div>
       <div class="top">
         <span>&#9775</span>
-        <input type="text" placeholder="输入密码">
+        <input type="text" placeholder="输入密码" v-model="pwd">
       </div>
       <div class="bottom">
         <p>忘记密码?</p>
-        <span>登&nbsp;&nbsp;&nbsp;录</span>
+        <span @click="loginSend">登&nbsp;&nbsp;&nbsp;录</span>
       </div>
     </div>
     <div class="body2" :class="{on: !login}">
       <div class="top">
         <span>&#9851</span>
-        <input type="text" placeholder="手机号/邮箱/用户名">
+        <input type="text" placeholder="手机号/邮箱/用户名" v-model="phone">
       </div>
       <div class="top">
         <span>&#9775</span>
         <input type="text" placeholder="输入图片内容">
-        <img src="" alt="" class="code">
+        <img src="http://localhost:3000/captcha" alt="" class="code" v-model="captcha" @click="updateCaptcha">
       </div>
       <div class="top">
         <span>&#9775</span>
-        <input type="text" placeholder="动态密码">
-        <button class="pwd">获取动态密码</button>
+        <input type="text" placeholder="动态密码" v-model="captcha">
+        <button class="pwd" @click="sendCode">{{computeTime ? `已发送(${computeTime})s` : '获取验证码'}}</button>
       </div>
       <div class="bottom">
         <p>忘记密码?</p>
-        <span>登&nbsp;&nbsp;&nbsp;录</span>
+        <span @click="loginSend">登&nbsp;&nbsp;&nbsp;录</span>
       </div>
     </div>
     <div class="body3">
@@ -51,16 +51,130 @@
         <li><img src="./image/login_ico2.png" alt=""></li>
       </ul>
     </div>
+    <AlertTip v-if="isShowAlert" :alertText="alertText" @closeTip="closeTip"/>
   </div>
 </template>
 
 <script>
+  import AlertTip from '../../components/AlertTip/AlertTip.vue'
+
+  import {loginPwd, loginSms, sendCode} from '../../api'
   export default {
     data(){
       return{
-        login: true
+        login: true,
+        phone: '', //手机号
+        code: '', //短信验证码
+        name: '', //用户名
+        pwd: '',//密码
+        captcha: '',//图形验证码
+        computeTime: 0, //倒计时事件
+        showPwd: false,//是否显示密码
+        alertText: '', //显示警告框
+        isShowAlert: false //显示警告框
       }
+    },
+    computed: {
+      rightPhone(){//以1开头，11位数字
+        return /^1\d{10}$/.test(this.phone)
+      }
+    },
+    methods: {
+      async sendCode(){
+        this.computeTime = 30
+        const intervalId = setInterval(()=>{
+          this.computeTime--
+          if(this.computeTime === 0){
+            clearInterval(intervalId)
+          }
+        },1000)
+        //发送ajax请求，发送验证码短信
+//        const result = await sendCode(this.phone)
+//        if(result.code ===1){
+//          //显示提示
+//          this.showAlert(result.msg)
+//          //停止计时
+//          clearInterval(intervalId)
+//          this.computeTime = 0
+//        }
+      },
+      showAlert(text){
+        this.isShowAlert = true
+        this.alertText = text
+      },
+      updateCaptcha(event){
+        event.target.src = 'http://localhost:3000/captcha?' + Date.now()
+      },
+      async loginSend(){
+        this.showAlert('验证码不正确')
+
+
+
+
+        let result
+        //前台表单验证，如果不通过显示对应提示
+        if(!this.login) {//phone, code
+
+          const {rightPhone, phone, code} = this
+          if (!rightPhone) {
+            this.showAlert('手机号不正确')
+            this.isShowAlert=true
+            return
+          } else if (!/^\d{6}$/.test(code)) {
+            this.showAlert('验证码不正确')
+            this.isShowAlert=true
+            return
+          }
+
+          //请求手机号/验证码登陆
+          const result = await loginSms({phone, code})
+          if(result.code === 1){ //失败
+            this.showAlert(result.msg)
+          }else { //成功
+            //将user保存到vuex中
+            const user = result.data
+            this.$store.dispatch('saveUserInfo', user)
+            //回退到上一个路由
+            this.$router.replace('/profile')
+          }
+
+        }else {//name, pwd, captcha
+
+          const{name, pwd ,captcha} = this
+          if (!name) {
+            this.showAlert('必须指定用户名')
+            return
+          } else if (!pwd) {
+            this.showAlert('必须指定密码')
+            return
+          }else if (!captcha) {
+            this.showAlert('必须指定验证码')
+            return
+          }
+          //请求用户/密码登录
+          result = await loginPwd({name, pwd ,captcha})
+
+        }
+//        if(result.code === 1){ //失败
+//          this.showAlert(result.msg)
+//        }else { //成功
+//          //将user保存到vuex中
+//          const user = result.data
+//          this.$store.dispatch('saveUserInfo', user)
+//          //回退到上一个路由
+//          this.$router.replace('/profile')
+//        }
+      },
+      closeTip(){
+        this.isShowAlert = false
+        this.alertText = ''
+      }
+    },
+    components: {
+      AlertTip
     }
+
+
   }
 </script>
 
@@ -156,7 +270,6 @@
         .code
           width 85px
           height 30px
-          background red
           position absolute
           right 0
       .bottom

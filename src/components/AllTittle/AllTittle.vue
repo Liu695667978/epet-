@@ -5,24 +5,26 @@
       <span>{{text}}</span>
       <a href="###" class="all_icon" @click="changeShow"></a>
     </div>
-    <div class="all_show" v-show="allShow">
-      <a href="###">
+    <transition name="fade">
+      <div class="all_show" v-show="allShow">
+        <a href="###">
         <span class="show_icon icon1"></span>
         <p>首页</p>
       </a>
-      <a href="###">
-        <span class="show_icon icon2"></span>
-        <p>首页</p>
-      </a>
-      <a href="###">
-        <span class="show_icon icon3"></span>
-        <p>首页</p>
-      </a>
-      <a href="###">
-        <span class="show_icon icon4"></span>
-        <p>首页</p>
-      </a>
-    </div>
+        <a href="###">
+          <span class="show_icon icon2"></span>
+          <p>首页</p>
+        </a>
+        <a href="###">
+          <span class="show_icon icon3"></span>
+          <p>首页</p>
+        </a>
+        <a href="###">
+          <span class="show_icon icon4"></span>
+          <p>首页</p>
+        </a>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -54,6 +56,7 @@
     line-height 50px
     padding 0 10px
     font-size 18px
+
     .all_back
       background-image url("./images/img.png")
       background-size 234px 159px
@@ -71,14 +74,20 @@
   .all_show
     bottom-border-1px(#d7d7d7)
     width 100%
-    height 47px
+    height 50px
     display flex
     box-sizing border-box
     padding 2px 0
+    overflow hidden
+    &.fade-enter-active, &.fade-leave-active
+     transition all 0.3s
+    &.fade-enter, &.fade-leave-to
+      height 0
     a
       flex 1
       text-align center
       font-size 13px
+      display block
       .show_icon
         background-image url("./images/img.png")
         background-size 234px 163px
@@ -93,4 +102,5 @@
         background-position -172px -90px
       .icon4
         background-position -172px -133px
+
 </style>
